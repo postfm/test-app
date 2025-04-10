@@ -3,19 +3,43 @@
 import { Box, Button, Flex, Group, Input, Text } from '@chakra-ui/react';
 import { BsChevronDown } from 'react-icons/bs';
 import { useState } from 'react';
-import TaskList from './components/ui/task-list';
+import TaskItem from './components/ui/task-item';
+import { task } from './constants/interface';
+import { filter } from './utils/filter';
+import { ButtonType } from './constants/constants';
 
 function App() {
   const [tasks, setTasks] = useState([
-    { name: 'Сделать верстку', isActive: true },
-    { name: 'Запрограммировать интерфейс', isActive: true },
-    { name: 'Написать тесты', isActive: true },
+    { name: 'Сделать верстку', completed: false },
+    { name: 'Запрограммировать интерфейс', completed: false },
+    { name: 'Написать тесты', completed: false },
   ]);
+  const [task, setTask] = useState('');
+  const [filterType, setFilterType] = useState(ButtonType.ALL);
+
+  const completed = false;
+  const leftTasks = tasks.filter((task) => task.completed === completed).length;
 
   const clickAddHandler = () => {
-    const element = { name: 'Проверка', isActive: true };
-    tasks.push(element);
-    setTasks(tasks);
+    if (task) {
+      const element = { name: task, completed: false };
+
+      setTasks([...tasks, element]);
+      setTask('');
+    }
+  };
+
+  const changeInputHandler = (evt: React.ChangeEvent<HTMLInputElement>) => {
+    setTask(evt.target.value);
+  };
+
+  const completeTask = (item: task) => {
+    setTasks(tasks.map((task) => (task === item ? { ...task, completed: !task.completed } : task)));
+  };
+
+  const deleteCompletedTasks = () => {
+    setTasks([...tasks.filter((task) => task.completed === false)]);
+    setFilterType(ButtonType.ALL);
   };
 
   return (
@@ -48,11 +72,17 @@ function App() {
         >
           <Input
             flex='1'
+            fontFamily={'Roboto'}
+            fontWeight='thin'
             placeholder='Enter new task'
+            value={task}
+            onChange={changeInputHandler}
           />
           <Button
             bg='bg.subtle'
             variant='outline'
+            fontFamily={'Roboto'}
+            fontWeight='thin'
             onClick={clickAddHandler}
           >
             Add
@@ -80,7 +110,19 @@ function App() {
         </Flex>
       </Box>
 
-      <TaskList tasks={tasks} />
+      <Box
+        maxW={780}
+        mx={'auto'}
+        bg={'gray.100'}
+      >
+        {[...filter[filterType](tasks)].map((task) => (
+          <TaskItem
+            key={task.name}
+            task={task}
+            onComplete={completeTask}
+          />
+        ))}
+      </Box>
 
       <Box
         maxW={780}
@@ -110,13 +152,14 @@ function App() {
             bg={'transparent'}
             color={'gray.400'}
           >
-            2 items left
+            {leftTasks} items left
           </Box>
           <Flex gap={4}>
             <Button
               font={'inherit'}
               bg={'transparent'}
               color={'gray.400'}
+              onClick={() => setFilterType(ButtonType.ALL)}
             >
               All
             </Button>
@@ -124,6 +167,7 @@ function App() {
               font={'inherit'}
               bg={'transparent'}
               color={'gray.400'}
+              onClick={() => setFilterType(ButtonType.ACTIVE)}
             >
               Active
             </Button>
@@ -131,6 +175,7 @@ function App() {
               font={'inherit'}
               bg={'transparent'}
               color={'gray.400'}
+              onClick={() => setFilterType(ButtonType.COMPLETED)}
             >
               Completed
             </Button>
@@ -139,6 +184,7 @@ function App() {
             font={'inherit'}
             bg={'transparent'}
             color={'gray.400'}
+            onClick={deleteCompletedTasks}
           >
             Clear completed
           </Button>

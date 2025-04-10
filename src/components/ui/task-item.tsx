@@ -1,16 +1,14 @@
 'use client';
 
+import { task } from '@/constants/interface';
 import { Box, Checkbox } from '@chakra-ui/react';
 
-interface TaskItemProps {
-  task: {
-    name: string;
-    isActive: boolean;
-  };
+interface TaskListProps {
+  task: task;
+  onComplete: (task: task) => void;
 }
 
-export default function TaskItem({ task }: TaskItemProps) {
-  const x = 0;
+export default function TaskItem({ task, onComplete }: TaskListProps) {
   return (
     <Box
       pt={8}
@@ -18,19 +16,22 @@ export default function TaskItem({ task }: TaskItemProps) {
       pb={8}
       borderBottomWidth={1}
       borderBottomColor={'gray.300'}
+      key={task.name}
     >
       <Checkbox.Root
         variant={'outline'}
         colorPalette={'green'}
         size={'lg'}
       >
-        <Checkbox.HiddenInput />
+        <Checkbox.HiddenInput onChange={() => onComplete(task)} />
         <Checkbox.Control />
         <Checkbox.Label
           fontFamily={'Roboto'}
           fontWeight='thin'
           fontSize={36}
-          color={x ? 'gray.600' : 'red.600'}
+          color={task.completed ? 'gray.300' : 'gray.600'}
+          textDecoration={task.completed ? 'line-through' : 'none'}
+          textDecorationThickness={task.completed ? '1px' : '0'}
         >
           {task.name}
         </Checkbox.Label>
