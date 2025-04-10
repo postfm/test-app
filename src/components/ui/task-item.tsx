@@ -1,3 +1,5 @@
+'use client';
+
 import { Box, Checkbox } from '@chakra-ui/react';
 
 interface TaskItemProps {
