@@ -8,6 +8,7 @@ interface TaskItemProps {
 }
 
 export default function TaskItem({ task }: TaskItemProps) {
+  const x = 0;
   return (
     <Box
       pt={8}
@@ -27,7 +28,7 @@ export default function TaskItem({ task }: TaskItemProps) {
           fontFamily={'Roboto'}
           fontWeight='thin'
           fontSize={36}
-          color={'gray.600'}
+          color={x ? 'gray.600' : 'red.600'}
         >
           {task.name}
         </Checkbox.Label>

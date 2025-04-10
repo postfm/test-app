@@ -1,14 +1,23 @@
-import { Box, Button, Flex, Group, Input, Text } from '@chakra-ui/react';
-import TaskItem from './components/ui/task-item';
-import { BsChevronDown } from 'react-icons/bs';
+'use client';
 
-const tasks = [
-  { name: 'Сделать верстку', isActive: true },
-  { name: 'Запрограммировать интерфейс', isActive: true },
-  { name: 'Написать тесты', isActive: true },
-];
+import { Box, Button, Flex, Group, Input, Text } from '@chakra-ui/react';
+import { BsChevronDown } from 'react-icons/bs';
+import { useState } from 'react';
+import TaskList from './components/ui/task-list';
 
 function App() {
+  const [tasks, setTasks] = useState([
+    { name: 'Сделать верстку', isActive: true },
+    { name: 'Запрограммировать интерфейс', isActive: true },
+    { name: 'Написать тесты', isActive: true },
+  ]);
+
+  const clickAddHandler = () => {
+    const element = { name: 'Проверка', isActive: true };
+    tasks.push(element);
+    setTasks(tasks);
+  };
+
   return (
     <Box
       maxW={'auto'}
@@ -44,6 +53,7 @@ function App() {
           <Button
             bg='bg.subtle'
             variant='outline'
+            onClick={clickAddHandler}
           >
             Add
           </Button>
@@ -69,15 +79,9 @@ function App() {
           <BsChevronDown display={'inline'} /> What needs to be done?
         </Flex>
       </Box>
-      <Box
-        maxW={780}
-        mx={'auto'}
-        bg={'gray.100'}
-      >
-        {tasks.map((task) => (
-          <TaskItem task={task} />
-        ))}
-      </Box>
+
+      <TaskList tasks={tasks} />
+
       <Box
         maxW={780}
         mx={'auto'}
